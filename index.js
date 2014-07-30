@@ -20,10 +20,8 @@ module.exports = function() {
   }
 
   var line = function(fmt) {
-    if (!fmt) {
-      push('')
-      return line
-    }
+    if (!arguments.length) return line
+
     if (fmt[fmt.length-1] === '{') {
       push(util.format.apply(util, arguments))
       indent++
