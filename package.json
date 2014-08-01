@@ -1,6 +1,6 @@
 {
   "name": "generate-function",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Module that helps you write generated functions in Node",
   "main": "index.js",
   "scripts": {
