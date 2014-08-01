@@ -22,6 +22,12 @@ module.exports = function() {
   var line = function(fmt) {
     if (!fmt) return line
 
+    if (fmt.trim()[0] === '}' && fmt[fmt.length-1] === '{') {
+      indent--
+      push(util.format.apply(util, arguments))
+      indent++
+      return line
+    }
     if (fmt[fmt.length-1] === '{') {
       push(util.format.apply(util, arguments))
       indent++
