@@ -9,6 +9,25 @@ var first = function(str) {
   return str.trim()[0]
 }
 
+var notEmpty = function(line) {
+  return line.trim()
+}
+
+var notEmptyElse = function() {
+  var notNext = false
+  return function(line, i, lines) {
+    if (notNext) {
+      notNext = false
+      return ''
+    }
+    if (lines[i].trim() === '} else {' && (lines[i+1] || '').trim() === '}') {
+      notNext = true
+      return lines[i].replace('} else {', '}')
+    }
+    return line
+  }
+}
+
 module.exports = function() {
   var lines = []
   var indent = 0
@@ -40,6 +59,14 @@ module.exports = function() {
     }
 
     push(util.format.apply(util, arguments))
+    return line
+  }
+
+  line.trim = function() {
+    lines = lines
+      .filter(notEmpty)
+      .map(notEmptyElse())
+      .filter(notEmpty)
     return line
   }
 
