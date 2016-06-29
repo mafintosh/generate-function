@@ -25,5 +25,8 @@
   "homepage": "https://github.com/mafintosh/generate-function",
   "devDependencies": {
     "tape": "^2.13.4"
-  }
+  },
+  "files": [
+    "index.js"
+  ]
 }
