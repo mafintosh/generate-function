@@ -16,51 +16,61 @@ You should only use this if you really, really, really need this for performance
 ## Usage
 
 ``` js
-var genfun = require('generate-function')
+const genfun = require('generate-function')
+const { d } = genfun.formats
 
-var addNumber = function(val) {
-  var fn = genfun()
-    ('function add(n) {')
-      ('return n + %d', val) // supports format strings to insert values
-    ('}')
+function addNumber (val) {
+  const gen = genfun()
 
-  return fn.toFunction() // will compile the function
+  gen(`
+    function add (n) {')
+      return n + ${d(val)}) // supports format strings to insert values
+    }
+  `)
+
+  return gen.toFunction() // will compile the function
 }
 
-var add2 = addNumber(2)
+const add2 = addNumber(2)
 
-console.log('1+2=', add2(1))
+console.log('1 + 2 =', add2(1))
 console.log(add2.toString()) // prints the generated function
 ```
 
 If you need to close over variables in your generated function pass them to `toFunction(scope)`
 
 ``` js
-var multiply = function(a, b) {
+function multiply (a, b) {
   return a * b
 }
 
-var addAndMultiplyNumber = function(val) {
-  var fn = genfun()
-    ('function(n) {')
-      ('if (typeof n !== "number") {') // ending a line with { will indent the source
-        ('throw new Error("argument should be a number")')
-      ('}')
-      ('var result = multiply(%d, n+%d)', val, val)
-      ('return result')
-    ('}')
+function addAndMultiplyNumber (val) {
+  const gen = genfun()
+  
+  gen(`
+    function (n) {
+      if (typeof n !== 'number') {
+        throw new Error('argument should be a number')
+      }
+      const result = multiply(${d(val)}, n + ${d(val)})
+      return result
+    }
+  `)
 
-  // use fn.toString() if you want to see the generated source
+  // use gen.toString() if you want to see the generated source
 
-  return fn.toFunction({
-    multiply: multiply
-  })
+  return gen.toFunction({multiply})
 }
 
-var addAndMultiply2 = addAndMultiplyNumber(2)
+const addAndMultiply2 = addAndMultiplyNumber(2)
 
+console.log(addAndMultiply2.toString())
 console.log('(3 + 2) * 2 =', addAndMultiply2(3))
 ```
+
+You can call `gen(src)` as many times as you want to append more source code to the function.
+
+If you need a unique identifier for the scope of the generated function call `gen.sym('friendlyName')`.
 
 ## Related
 

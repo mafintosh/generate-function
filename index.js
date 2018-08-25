@@ -3,9 +3,22 @@ var util = require('util')
 var INDENT_START = /[\{\[]/
 var INDENT_END = /[\}\]]/
 
-module.exports = function() {
+var formats = {
+  s: function(s) {
+    return '' + s
+  },
+  d: function(d) {
+    return '' + Number(d)
+  },
+  o: function(o) {
+    return JSON.stringify(o)
+  }
+}
+
+var genfun = function() {
   var lines = []
   var indent = 0
+  var vars = {}
 
   var push = function(str) {
     var spaces = ''
@@ -13,28 +26,48 @@ module.exports = function() {
     lines.push(spaces+str)
   }
 
+  var pushLine = function(line) {
+    if (INDENT_END.test(line.trim()[0]) && INDENT_START.test(line[line.length-1])) {
+      indent--
+      push(line)
+      indent++
+      return
+    }
+    if (INDENT_START.test(line[line.length-1])) {
+      push(line)
+      indent++
+      return
+    }
+    if (INDENT_END.test(line.trim()[0])) {
+      indent--
+      push(line)
+      return
+    }
+
+    push(line)
+  }
+
   var line = function(fmt) {
     if (!fmt) return line
 
-    if (INDENT_END.test(fmt.trim()[0]) && INDENT_START.test(fmt[fmt.length-1])) {
-      indent--
-      push(util.format.apply(util, arguments))
-      indent++
-      return line
-    }
-    if (INDENT_START.test(fmt[fmt.length-1])) {
-      push(util.format.apply(util, arguments))
-      indent++
-      return line
-    }
-    if (INDENT_END.test(fmt.trim()[0])) {
-      indent--
-      push(util.format.apply(util, arguments))
-      return line
+    if (arguments.length === 1 && fmt.indexOf('\n') > -1) {
+      var lines = fmt.trim().split('\n')
+      for (var i = 0; i < lines.length; i++) {
+        pushLine(lines[i].trim())
+      }
+    } else {
+      pushLine(util.format.apply(util, arguments))
     }
 
-    push(util.format.apply(util, arguments))
     return line
+  }
+
+  line.formats = formats
+  
+  line.sym = function(name) {
+    if (!name) name = 'tmp'
+    if (!vars[name]) vars[name] = 0
+    return name + (vars[name]++ || '')
   }
 
   line.toString = function() {
@@ -59,3 +92,6 @@ module.exports = function() {
 
   return line
 }
+
+genfun.formats = formats
+module.exports = genfun
