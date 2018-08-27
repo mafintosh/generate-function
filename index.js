@@ -62,6 +62,7 @@ var genfun = function() {
     return line
   }
 
+  line.scope = {}
   line.formats = formats
   
   line.sym = function(name) {
@@ -75,9 +76,15 @@ var genfun = function() {
   }
 
   line.toFunction = function(scope) {
+    if (!scope) scope = {}
+
     var src = 'return ('+line.toString()+')'
 
-    var keys = Object.keys(scope || {}).map(function(key) {
+    Object.keys(line.scope).forEach(function (key) {
+      if (!scope[key]) scope[key] = line.scope[key]
+    })
+
+    var keys = Object.keys(scope).map(function(key) {
       return key
     })
 
