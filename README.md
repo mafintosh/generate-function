@@ -70,12 +70,19 @@ console.log('(3 + 2) * 2 =', addAndMultiply2(3))
 
 You can call `gen(src)` as many times as you want to append more source code to the function.
 
-If you need a unique identifier for the scope of the generated function call `gen.sym('friendlyName')`.
+## Variables
 
-## Related
+If you need a unique safe identifier for the scope of the generated function call `str = gen.sym('friendlyName')`.
+These are safe to use for variable names etc.
 
-See [generate-object-property](https://github.com/mafintosh/generate-object-property) if you need to safely generate code that
-can be used to reference an object property
+## Object properties
+
+If you need to access an object property use the `str = gen.property('objectName', 'propertyName')`.
+
+This returns `'objectName.propertyName'` if `propertyName` is safe to use as a variable. Otherwise
+it returns `objectName[propertyNameAsString]`.
+
+If you only pass `gen.property('propertyName')` it will only return the `propertyName` part safely
 
 ## License
 

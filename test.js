@@ -43,6 +43,7 @@ tape('generate property', function(t) {
   t.same(gen.sym('a'), 'a')
   t.same(gen.sym('a'), 'a1')
   t.same(gen.sym(42), 'tmp1')
+  t.same(gen.sym('const'), 'tmp2')
 
   t.end()
 })

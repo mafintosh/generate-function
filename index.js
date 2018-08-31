@@ -4,6 +4,70 @@ var isProperty = require('is-property')
 var INDENT_START = /[\{\[]/
 var INDENT_END = /[\}\]]/
 
+// from https://mathiasbynens.be/notes/reserved-keywords
+var RESERVED = [
+  'do',
+  'if',
+  'in',
+  'for',
+  'let',
+  'new',
+  'try',
+  'var',
+  'case',
+  'else',
+  'enum',
+  'eval',
+  'null',
+  'this',
+  'true',
+  'void',
+  'with',
+  'await',
+  'break',
+  'catch',
+  'class',
+  'const',
+  'false',
+  'super',
+  'throw',
+  'while',
+  'yield',
+  'delete',
+  'export',
+  'import',
+  'public',
+  'return',
+  'static',
+  'switch',
+  'typeof',
+  'default',
+  'extends',
+  'finally',
+  'package',
+  'private',
+  'continue',
+  'debugger',
+  'function',
+  'arguments',
+  'interface',
+  'protected',
+  'implements',
+  'instanceof',
+  'NaN',
+  'undefined'
+]
+
+var RESERVED_MAP = {}
+
+for (var i = 0; i < RESERVED.length; i++) {
+  RESERVED_MAP[RESERVED[i]] = true
+}
+
+var isVariable = function (name) {
+  return isProperty(name) && !RESERVED_MAP.hasOwnProperty(name)
+}
+
 var formats = {
   s: function(s) {
     return '' + s
@@ -65,9 +129,9 @@ var genfun = function() {
 
   line.scope = {}
   line.formats = formats
-  
+
   line.sym = function(name) {
-    if (!name || !isProperty(name)) name = 'tmp'
+    if (!name || !isVariable(name)) name = 'tmp'
     if (!vars[name]) vars[name] = 0
     return name + (vars[name]++ || '')
   }
