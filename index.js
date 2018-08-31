@@ -72,6 +72,18 @@ var genfun = function() {
     return name + (vars[name]++ || '')
   }
 
+  line.property = function(obj, name) {
+    if (arguments.length === 1) {
+      name = obj
+      obj = ''
+    }
+
+    name = name + ''
+
+    if (isProperty(name)) return (obj ? obj + '.' + name : name)
+    return obj ? obj + '[' + JSON.stringify(name) + ']' : JSON.stringify(name)
+  }
+
   line.toString = function() {
     return lines.join('\n')
   }
