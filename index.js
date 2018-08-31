@@ -1,4 +1,5 @@
 var util = require('util')
+var isProperty = require('is-property')
 
 var INDENT_START = /[\{\[]/
 var INDENT_END = /[\}\]]/
@@ -66,7 +67,7 @@ var genfun = function() {
   line.formats = formats
   
   line.sym = function(name) {
-    if (!name) name = 'tmp'
+    if (!name || !isProperty(name)) name = 'tmp'
     if (!vars[name]) vars[name] = 0
     return name + (vars[name]++ || '')
   }

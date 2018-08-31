@@ -24,6 +24,9 @@
   },
   "homepage": "https://github.com/mafintosh/generate-function",
   "devDependencies": {
-    "tape": "^2.13.4"
+    "tape": "^4.9.1"
+  },
+  "dependencies": {
+    "is-property": "^1.0.2"
   }
 }
