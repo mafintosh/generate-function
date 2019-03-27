@@ -23,8 +23,8 @@ function addNumber (val) {
   const gen = genfun()
 
   gen(`
-    function add (n) {')
-      return n + ${d(val)}) // supports format strings to insert values
+    function add (n) {
+      return n + ${d(val)} // supports format strings to insert values
     }
   `)
 
