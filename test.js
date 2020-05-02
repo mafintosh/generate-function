@@ -47,3 +47,18 @@ tape('generate property', function(t) {
 
   t.end()
 })
+
+tape('generate IIFE module', function(t) {
+  var gen = genfun
+  (`function foo() {`)
+    (`return v + 10`)
+  (`}`)
+
+  var expected = `(function() {
+var v = 10;
+return (${gen})})();`
+
+  var mod = gen.toModule({ v: 10 })
+  t.same(mod, expected)
+  t.end()
+})

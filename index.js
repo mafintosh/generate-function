@@ -1,5 +1,6 @@
 var util = require('util')
 var isProperty = require('is-property')
+var jaystring = require('jaystring')
 
 var INDENT_START = /[\{\[]/
 var INDENT_END = /[\}\]]/
@@ -150,6 +151,22 @@ var genfun = function() {
 
   line.toString = function() {
     return lines.join('\n')
+  }
+
+  line.toModule = function(scope) {
+    if (!scope) scope = {}
+
+    Object.keys(line.scope).forEach(function (key) {
+      if (!scope[key]) scope[key] = line.scope[key]
+    })
+
+    var scopeSource = Object.entries(scope)
+      .map(function ([key, value]) {
+        return `var ${key} = ${jaystring(value)};`
+      })
+      .join('\n')
+
+    return `(function() {\n${scopeSource}\nreturn (${line})})();`
   }
 
   line.toFunction = function(scope) {

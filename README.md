@@ -46,7 +46,7 @@ function multiply (a, b) {
 
 function addAndMultiplyNumber (val) {
   const gen = genfun()
-  
+
   gen(`
     function (n) {
       if (typeof n !== 'number') {
@@ -57,8 +57,7 @@ function addAndMultiplyNumber (val) {
     }
   `)
 
-  // use gen.toString() if you want to see the generated source
-
+  // use gen.toString() if you want to see the generated function as a string
   return gen.toFunction({multiply})
 }
 
@@ -69,6 +68,30 @@ console.log('(3 + 2) * 2 =', addAndMultiply2(3))
 ```
 
 You can call `gen(src)` as many times as you want to append more source code to the function.
+
+## Compiling A Module
+
+If you need to compile a function as a standalone module, use `gen.toModule(scope)`. This method wraps the
+scope into an [IIFE](https://en.wikipedia.org/wiki/Immediately-invoked_function_expression) and returns it as a string. This is useful for compiling webpack modules or browser bundles.
+
+```js
+var gen = genfun(`
+  function addXAndY() {
+    return x + y
+  }
+`)
+
+console.log(gen.toModule({ x: 9, y: 3 }))
+/** output:
+ *
+ * (function() {
+ * var x = 9;
+ * var y = 3;;
+ * return (function addXAndY() {
+ *   return x + y
+ * })})();
+ */
+```
 
 ## Variables
 
