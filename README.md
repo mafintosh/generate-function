@@ -6,8 +6,6 @@ Module that helps you write generated functions in Node
 npm install generate-function
 ```
 
-[![build status](http://img.shields.io/travis/mafintosh/generate-function.svg?style=flat)](http://travis-ci.org/mafintosh/generate-function)
-
 ## Disclamer
 
 Writing code that generates code is hard.
